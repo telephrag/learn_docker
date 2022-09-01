@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,8 +10,13 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("chirtkem mudila"))
+	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(rw, "chirtkem mudila")
+		s, ok := syscall.Getenv("SECRET")
+		if !ok {
+			fmt.Fprintln(rw, http.StatusInternalServerError)
+		}
+		fmt.Fprintf(rw, "мон тынад секретёсыд тодисько: %s\n", s)
 	})
 
 	go func() {
