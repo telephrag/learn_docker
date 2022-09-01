@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/telephrag/errlist"
 )
 
 func main() {
@@ -14,7 +16,7 @@ func main() {
 		fmt.Fprintln(rw, "chirtkem mudila")
 		s, ok := syscall.Getenv("SECRET")
 		if !ok {
-			fmt.Fprintln(rw, http.StatusInternalServerError)
+			fmt.Fprintln(rw, errlist.New(fmt.Errorf("%d", http.StatusInternalServerError)))
 		}
 		fmt.Fprintf(rw, "мон тынад секретёсыд тодисько: %s\n", s)
 	})
