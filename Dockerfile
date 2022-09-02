@@ -9,6 +9,8 @@ RUN go build -o /go/bin/learn_docker .
 FROM gcr.io/distroless/base
 COPY --from=build-env /go/bin/learn_docker /
 
+USER 1000
+
 CMD ["./learn_docker"]
 
 # I have barely any idea what's happening here...

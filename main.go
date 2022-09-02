@@ -11,7 +11,29 @@ import (
 	"github.com/telephrag/errlist"
 )
 
+func getLogFile(fileName string) *os.File {
+	f, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		_, err := os.Create(fileName)
+		if err != nil {
+			log.Fatal(errlist.New(err))
+		}
+		f, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+		if err != nil {
+			log.Fatal(errlist.New(err))
+		}
+		return f
+	}
+	return f
+}
+
 func main() {
+
+	logFile := getLogFile("log.log")
+	defer logFile.Close()
+	log.SetFlags(log.Flags() &^ (log.Ldate | log.Ltime))
+	log.SetOutput(logFile)
+
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(rw, "chirtkem mudila")
 		s, ok := syscall.Getenv("SECRET")
