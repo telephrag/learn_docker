@@ -18,7 +18,7 @@ func main() {
 		if !ok {
 			fmt.Fprintln(rw, errlist.New(fmt.Errorf("%d", http.StatusInternalServerError)))
 		}
-		fmt.Fprintf(rw, "мон тынад секретёсыд тодисько: %s\n", s)
+		fmt.Fprintf(rw, "мон тынад секретъёсыд тодисько: %s\n", s)
 	})
 
 	go func() {
@@ -30,4 +30,14 @@ func main() {
 	interupt := make(chan os.Signal, 1)
 	signal.Notify(interupt, syscall.SIGTERM, syscall.SIGINT)
 	<-interupt
+
+	// Turns out that `docker stop %container%` sends SIGTERM.
+	// If it doesn't work `docker kill --signal=SIGKILL` is executed implicitly.
+	// In result line bellow will execute after container is stopped.
+	// In fact killing with any signal specified inside `Notify()` will result in execution
+	// of the line bellow.
+	// NOTE: To see execute container via `docker run` cause idk how to execute restart
+	//		 in non-headless mode.
+
+	log.Println("gracefull shutdown after container stops")
 }
