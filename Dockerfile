@@ -6,10 +6,10 @@ ADD . /go/src/learn_docker
 RUN go get -d -v ./...
 RUN go build -o /go/bin/learn_docker .
 
+USER 1000
+
 FROM gcr.io/distroless/base
 COPY --from=build-env /go/bin/learn_docker /
-
-USER 1000
 
 CMD ["./learn_docker"]
 

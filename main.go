@@ -29,10 +29,12 @@ func getLogFile(fileName string) *os.File {
 
 func main() {
 
-	logFile := getLogFile("log.log")
+	logFile := getLogFile("/data/log.log")
 	defer logFile.Close()
 	log.SetFlags(log.Flags() &^ (log.Ldate | log.Ltime))
 	log.SetOutput(logFile)
+
+	log.Print(errlist.New(nil).Set("event", "application_startup"))
 
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(rw, "chirtkem mudila")
@@ -61,5 +63,5 @@ func main() {
 	// NOTE: To see execute container via `docker run` cause idk how to execute restart
 	//		 in non-headless mode.
 
-	log.Println("gracefull shutdown after container stops")
+	log.Print(errlist.New(nil).Set("event", "application_graceful_shutdown"))
 }
