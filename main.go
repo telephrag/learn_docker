@@ -7,18 +7,19 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/telephrag/errlist"
 )
 
-func getLogFile(fileName string) *os.File {
-	f, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+func getLogFile(path string) *os.File {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
-		_, err := os.Create(fileName)
+		_, err := os.Create(path)
 		if err != nil {
 			log.Fatal(errlist.New(err))
 		}
-		f, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+		f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 		if err != nil {
 			log.Fatal(errlist.New(err))
 		}
@@ -62,6 +63,10 @@ func main() {
 	// of the line bellow.
 	// NOTE: To see execute container via `docker run` cause idk how to execute restart
 	//		 in non-headless mode.
-
+	time.Sleep(time.Second * 60)
 	log.Print(errlist.New(nil).Set("event", "application_graceful_shutdown"))
+
+	// `docker stop %container%` has a timeout that can be set with `--time` flag.
+	// Docker shall wait until timeout and than container will cease to exist.
+	// Program must perform a cleanup within the said timeout to safely exit.
 }
