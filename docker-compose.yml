@@ -1,0 +1,25 @@
+
+version: 0.0.1
+services:
+  learn-docker:
+    container_name: learn_docker_c
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: learn_docker
+    env_file:
+      - .env
+    ports: 
+      - 8080:8080
+    volumes:
+      - /home/trofchik/volumes/learn_docker_volume/service:/data
+    depends_on: 
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: learn_docker_mongo_c
+    volumes:
+      - /home/trofchik/volumes/learn_docker_volume/mongo:/data
+    ports:
+      - 27017:27017
